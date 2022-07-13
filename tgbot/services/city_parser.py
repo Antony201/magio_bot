@@ -26,7 +26,7 @@ async def parse(url):
 async def find_address(city_name):
     lang_list = [await parse(russian_url), await parse(Ukrainian_url)]
 
-    text = answers["city_not_found"]
+    text = ""
     try:
         for city_list in lang_list:
             for city in city_list:
@@ -42,6 +42,10 @@ async def find_address(city_name):
 
     except Exception:
         text = answers["wrong"]
+
+
+    if not text:
+        text = answers["city_not_found"]
 
 
     return text
