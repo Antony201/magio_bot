@@ -18,6 +18,15 @@ services:
     - tg_bot
 
 
+  redis:
+    image: redis:7.0.2-alpine
+    volumes:
+      - ./data:/data
+    ports:
+      - 6379:6379
+    networks:
+      - tg_bot
+
 networks:
   tg_bot:
     driver: bridge
