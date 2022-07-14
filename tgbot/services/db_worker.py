@@ -33,6 +33,7 @@ def create_user(username, user_id, status):
     query = User.select().where(User.user_id == user_id)
 
     if not query.exists():
+
         user = User.create(
             username=username,
             user_id=user_id,
@@ -108,6 +109,17 @@ def is_admin(user):
 
         return user_status == "admin"
 
+
+    return False
+
+
+def is_root(user):
+    query = User.select().where(User.user_id == user.id)
+
+    if query.exists():
+        user_status = query[0].status
+
+        return user_status == "root"
 
     return False
 

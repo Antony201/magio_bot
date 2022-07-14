@@ -4,13 +4,13 @@ from aiogram.types import Message
 from tgbot.keyboards.reply import back_button_keyboard
 from tgbot.misc.states import MagioStates
 from tgbot.services.city_parser import find_address
-from tgbot.services.db_worker import is_admin
+from tgbot.services.db_worker import is_admin, is_root
 from tgbot.services.menus import send_admin_menu, send_main_menu, send_first_menu
 from tgbot.texts import buttons, answers
 
 
 async def menu_chose(message: Message):
-    if message.text == buttons["admin_panel_button"] and is_admin(message.from_user):
+    if message.text == buttons["admin_panel_button"] and is_root(message.from_user):
         await send_admin_menu(message)
 
     elif message.text == buttons["first_menu_button"]:

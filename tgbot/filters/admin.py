@@ -3,7 +3,7 @@ import typing
 from aiogram.dispatcher.filters import BoundFilter
 
 from tgbot.config import Config
-from tgbot.services.db_worker import is_admin, change_user_status
+from tgbot.services.db_worker import is_admin, change_user_status, is_root
 
 
 class AdminFilter(BoundFilter):
@@ -18,7 +18,7 @@ class AdminFilter(BoundFilter):
         config: Config = obj.bot.get('config')
 
         if (obj.from_user.id in config.tg_bot.admin_ids):
-            change_user_status(obj.from_user.id, "admin")
+            change_user_status(obj.from_user.id, "root")
 
-        return is_admin(obj.from_user) == self.is_admin
+        return is_root(obj.from_user) == self.is_admin
 

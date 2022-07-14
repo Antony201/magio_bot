@@ -4,7 +4,7 @@ from aiogram.types import Message
 from tgbot.keyboards.reply import back_button_keyboard
 from tgbot.misc.states import MagioStates
 from tgbot.services.db_worker import is_user, change_user_status, get_admin_list, delete_user
-from tgbot.services.menus import send_admin_menu, send_main_menu
+from tgbot.services.menus import send_admin_menu, send_main_menu, send_change_buttons_menu
 from tgbot.texts import buttons, answers
 
 
@@ -34,6 +34,9 @@ async def admin_menu(message: Message):
 
         await message.reply(admin_list_text)
         await send_admin_menu(message)
+
+    if message.text == buttons["admin_change_texts"]:
+        await send_change_buttons_menu(message)
 
     if message.text == buttons["back_button"]:
         await admin_start(message)
@@ -76,7 +79,65 @@ async def delete_admin(message: Message):
         await message.reply(answers["admin_delete_not_found"])
 
 
+async def chose_editing(message: Message):
+    kb = await back_button_keyboard()
+
+    if message.text != buttons["back_button"]:
+        await message.reply(answers["change_text"], reply_markup=kb)
+
+        if message.text == buttons["change_first_menu_button"]:
+            await MagioStates.change_button_1.set()
+
+        if message.text == buttons["change_second_menu_button"]:
+            await MagioStates.change_button_2.set()
+
+        if message.text == buttons["change_third_menu_button"]:
+            await MagioStates.change_button_3.set()
+
+        if message.text == buttons["change_first_first_menu_button"]:
+            await MagioStates.change_button_1_1.set()
+
+        if message.text == buttons["change_first_second_menu_button"]:
+            await MagioStates.change_button_1_2.set()
+
+        if message.text == buttons["change_city_search_answer"]:
+            await MagioStates.change_city_search_answer.set()
+
+        if message.text == buttons["change_deliver_answer"]:
+            await MagioStates.change_deliver_answer.set()
+
+        if message.text == buttons["change_city_not_found_text"]:
+            await MagioStates.change_city_not_found_answer.set()
+
+        if message.text == buttons["change_send_contact_button"]:
+            await MagioStates.change_button_contact.set()
+
+        if message.text == buttons["change_second_menu_answer"]:
+            await MagioStates.change_button2_answer.set()
+
+        if message.text == buttons["change_example_text"]:
+            await MagioStates.change_example_text.set()
+
+        if message.text == buttons["change_example_photo"]:
+            await MagioStates.change_example_photo.set()
+
+        if message.text == buttons["change_contact_answer"]:
+            await MagioStates.change_contact_answer.set()
+
+        if message.text == buttons["change_welcome_photo"]:
+            await MagioStates.change_welcome_photo.set()
+
+
+        if message.text == buttons["change_caption_welcome_photo"]:
+            await MagioStates.change_caption_welcome_photo.set()
+
+
+    else:
+        await send_admin_menu(message)
+
+
 def register_admin(dp: Dispatcher):
     dp.register_message_handler(admin_start, commands=["start"], state="*", is_admin=True)
     dp.register_message_handler(admin_menu, state=MagioStates.admin_menu_state, is_admin=True)
     dp.register_message_handler(add_admin, state=MagioStates.admin_add, is_admin=True)
+    dp.register_message_handler(chose_editing, state=MagioStates.admin_chose_edit, is_admin=True)
