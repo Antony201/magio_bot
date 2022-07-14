@@ -99,4 +99,5 @@ Phone: {3}
     "chose_editing": "Оберіть що бажаєте змінити:",
 
     "editing_successfull": "Успішно змінено!",
+    "you_not_admin": "Ви більше не адмін!",
 }

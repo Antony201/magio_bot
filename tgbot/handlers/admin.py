@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 from tgbot.keyboards.reply import back_button_keyboard
 from tgbot.misc.states import MagioStates
-from tgbot.services.db_worker import is_user, change_user_status, get_admin_list, delete_user
+from tgbot.services.db_worker import is_user, change_user_status, get_admin_list, delete_user, is_admin
 from tgbot.services.menus import send_admin_menu, send_main_menu, send_change_buttons_menu
 from tgbot.texts import buttons, answers
 
@@ -23,7 +23,7 @@ async def admin_menu(message: Message):
         kb = await back_button_keyboard()
 
         await message.reply(answers["enter_admin_username"], reply_markup=kb)
-        await MagioStates.admin_add.set()
+        await MagioStates.admin_delete.set()
 
     if message.text == buttons["admin_list"]:
         admin_list = get_admin_list()
@@ -70,9 +70,14 @@ async def delete_admin(message: Message):
 
 
     elif user:
-        delete_user(message.text)
+        change_user_status(user.user_id, "user")
 
         await message.reply(answers["admin_delete_successfull"])
+        try:
+            await message.bot.send_message(user.user_id, answers["you_not_admin"])
+        except Exception:
+            await message.bot.send_message(message.from_user.id, answers["wrong"])
+
         await admin_start(message)
 
     else:
@@ -140,4 +145,5 @@ def register_admin(dp: Dispatcher):
     dp.register_message_handler(admin_start, commands=["start"], state="*", is_admin=True)
     dp.register_message_handler(admin_menu, state=MagioStates.admin_menu_state, is_admin=True)
     dp.register_message_handler(add_admin, state=MagioStates.admin_add, is_admin=True)
+    dp.register_message_handler(delete_admin, state=MagioStates.admin_delete, is_admin=True)
     dp.register_message_handler(chose_editing, state=MagioStates.admin_chose_edit, is_admin=True)
